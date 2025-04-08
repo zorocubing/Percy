@@ -3,6 +3,15 @@ import subprocess
 import psutil
 import pynvml
 from pynvml import *
+from psutil._common import bytes2human
+
+# Define the pretty-print function at the top level
+def pprint_ntuple(nt):
+    for name in nt._fields:
+        value = getattr(nt, name)
+        if name != 'percent':
+            value = bytes2human(value)
+        print('{:<10} : {:>7}'.format(name.capitalize(), value))
 
 # Try to initialize NVIDIA management library
 try:
@@ -15,8 +24,8 @@ except NVMLError as e:
 # Main loop for Percy
 print("Welcome to Percy! I'm your PC agent. Ask away! (Type 'exit' to quit)")
 while True:
-    # Updated prompt to hint at new command
-    command = input("What would you like to know? (Driver Version/GPU Name/GPU Usage/CPU Usage): ").lower().strip()
+    # Updated prompt to include memory command
+    command = input("What would you like to know? (Driver Version/GPU Name/GPU Usage/CPU Usage/Memory): ").lower().strip()
 
     # Exit condition
     if command == "exit":
@@ -63,9 +72,14 @@ while True:
 
     # CPU Usage command
     elif command in ["cpu", "cpu usage", "cpu load"]:
-            cpu_usage = psutil.cpu_percent()
-            print(f"CPU {cpu_usage}% usage")
+        cpu_usage = psutil.cpu_percent()
+        print(f"CPU {cpu_usage}% usage")
+
+    # Memory Usage command
+    elif command in ["ram", "ram usage", "memory", "memory usage"]:
+        print('MEMORY\n------')
+        pprint_ntuple(psutil.virtual_memory())
 
     # Handle invalid commands
     else:
-        print("Huh? I didn’t catch that. Try 'driver version', 'gpu name', or 'gpu usage'. Or 'exit' to quit.")
+        print("Huh? I didn’t catch that. Try 'driver version', 'gpu name', 'gpu usage', 'cpu usage', or 'memory'. Or 'exit' to quit.")
