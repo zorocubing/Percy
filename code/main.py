@@ -16,7 +16,7 @@ except NVMLError as e:
 print("Welcome to Percy! I'm your PC agent. Ask away! (Type 'exit' to quit)")
 while True:
     # Updated prompt to hint at new command
-    command = input("What would you like to know? (Driver Version/GPU Name/GPU Usage): ").lower().strip()
+    command = input("What would you like to know? (Driver Version/GPU Name/GPU Usage/CPU Usage): ").lower().strip()
 
     # Exit condition
     if command == "exit":
@@ -61,6 +61,11 @@ while True:
         except NVMLError as e:
             print(f"Couldn't get GPU usage: {e}")
 
-    # Handle invalid commands (updated hint)
+    # CPU Usage command
+    elif command in ["cpu", "cpu usage", "cpu load"]:
+            cpu_usage = psutil.cpu_percent()
+            print(f"CPU {cpu_usage}% usage")
+
+    # Handle invalid commands
     else:
         print("Huh? I didn’t catch that. Try 'driver version', 'gpu name', or 'gpu usage'. Or 'exit' to quit.")
