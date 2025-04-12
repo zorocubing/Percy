@@ -69,7 +69,7 @@ def process_command(command):
         except NVMLError as e:
             print(f"Couldn't get GPU name: {e}")
 
-    elif command in ["gpu usage", "usage", "gpu load", "check gpu usage"]:
+    elif command in ["gpu usage", "usage", "gpu load", "check gpu usage", "check gpu"]:
         try:
             device_count = nvmlDeviceGetCount()
             if device_count == 0:
